@@ -1,0 +1,8 @@
+/* Styles go here */
+.rowC{display:flex; 
+	flex-direction:row;
+	}
+#please_refresh{
+	vertical-align: middle;
+    margin: auto;
+};
