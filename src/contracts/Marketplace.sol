@@ -10,7 +10,7 @@ contract Marketplace{
 		string name;
 		uint price;
 		address payable owner;
-		bool purchased;
+		bool insell;
 	}
 	constructor() public{
 		name = "Marketplace";
@@ -21,7 +21,7 @@ contract Marketplace{
 		string name,
 		uint price,
 		address payable owner,
-		bool purchased
+		bool insell
 		);
 
 	event ProductPurchased(
@@ -29,7 +29,15 @@ contract Marketplace{
 		string name,
 		uint price,
 		address payable owner,
-		bool purchased
+		bool insell
+		);
+
+	event ProductinSell(
+		uint id,
+		string name,
+		uint price,
+		address payable owner,
+		bool insell
 		);
 
 
@@ -48,6 +56,24 @@ contract Marketplace{
 		emit ProductCreated(productCount, _name, _price, msg.sender, false);
 	}
 
+
+	function sellProduct(uint _id) public{
+		//fetch the product
+		Product memory _product = products[_id];
+		//make sur the product is valid
+		require(_product.id >0 && _product.id <= productCount);
+		// require that the product has not been sold already
+		require(!_product.insell);
+		//mark it as in sell
+		_product.insell = true;
+		//update the product
+		products[_id]=_product;
+		// trigger an event
+		emit ProductinSell(productCount, _product.name, _product.price, msg.sender, true);
+	}
+
+
+
 	function purchaseProduct(uint _id) public payable {
 		//fetch the product
 		Product memory _product = products[_id];
@@ -57,21 +83,20 @@ contract Marketplace{
 		require(_product.id >0 && _product.id <= productCount);
 		//require ether to be enough
 		require(msg.value >= _product.price);
-		// require that the product has not been purchased already
-		require(!_product.purchased);
+		// require that the product is in sell
+		require(_product.insell);
 		//require that the buyer is not the seller
 		require(_seller != msg.sender);
-		// Pruchase it
 		//transfer ownership to the buyer
 		_product.owner = msg.sender;
 		//mark it as purchased
-		_product.purchased = true;
+		_product.insell = false;
 		//update the product
 		products[_id]=_product;
 		// pay the seller
 		address(_seller).transfer(msg.value);
 		//trigger an event
-		emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, true);
+		emit ProductPurchased(productCount, _product.name, _product.price, msg.sender, false);
 	}
 
 }

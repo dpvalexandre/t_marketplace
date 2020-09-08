@@ -1,8 +1,30 @@
 /* Styles go here */
-.rowC{display:flex; 
-	flex-direction:row;
-	}
 #please_refresh{
 	vertical-align: middle;
     margin: auto;
+};
+
+
+.page-content{
+	width : 95%;
+	height : 100%;
+};
+
+h1{
+	color : white;
+};
+
+.products-grid{
+	width : 100%;
+	margin : auto;
+}
+
+
+header .material-icons{
+	visibility: hidden;
+	display : none;
+}
+
+.tooltip_owner span{
+ max-width: fit-content;
 };
